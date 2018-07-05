@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0356942B20EEC46C006A555A /* SBAMedicationRemindersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0356942A20EEC46C006A555A /* SBAMedicationRemindersViewController.swift */; };
+		0356942F20EEC537006A555A /* MedicationReminder.json in Resources */ = {isa = PBXBuildFile; fileRef = 0356942D20EEC537006A555A /* MedicationReminder.json */; };
+		0356943020EEC537006A555A /* MedicationReminderDetails.json in Resources */ = {isa = PBXBuildFile; fileRef = 0356942E20EEC537006A555A /* MedicationReminderDetails.json */; };
 		CB65715120E056CC00A8E61C /* SBAUnderlinedButtonCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CB65713C20E056CC00A8E61C /* SBAUnderlinedButtonCell.xib */; };
 		CB65715320E07AE200A8E61C /* SBARoundedButtonCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CB65715220E07AE100A8E61C /* SBARoundedButtonCell.xib */; };
 		CB65717B20E2946C00A8E61C /* SBAFormTitleTextCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CB65716620E2946C00A8E61C /* SBAFormTitleTextCell.xib */; };
@@ -259,6 +262,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		0356942A20EEC46C006A555A /* SBAMedicationRemindersViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBAMedicationRemindersViewController.swift; sourceTree = "<group>"; };
+		0356942D20EEC537006A555A /* MedicationReminder.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = MedicationReminder.json; sourceTree = "<group>"; };
+		0356942E20EEC537006A555A /* MedicationReminderDetails.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = MedicationReminderDetails.json; sourceTree = "<group>"; };
 		CB65713C20E056CC00A8E61C /* SBAUnderlinedButtonCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SBAUnderlinedButtonCell.xib; sourceTree = "<group>"; };
 		CB65715220E07AE100A8E61C /* SBARoundedButtonCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SBARoundedButtonCell.xib; sourceTree = "<group>"; };
 		CB65716620E2946C00A8E61C /* SBAFormTitleTextCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SBAFormTitleTextCell.xib; sourceTree = "<group>"; };
@@ -388,6 +394,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0356942C20EEC4F8006A555A /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				0356942D20EEC537006A555A /* MedicationReminder.json */,
+				0356942E20EEC537006A555A /* MedicationReminderDetails.json */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
 		F825BA5B207FD49D00D29F60 /* Data Tracking */ = {
 			isa = PBXGroup;
 			children = (
@@ -473,6 +488,7 @@
 		F83B44A72032467D002825AE /* BridgeApp */ = {
 			isa = PBXGroup;
 			children = (
+				0356942C20EEC4F8006A555A /* Resources */,
 				F83B44A82032467D002825AE /* BridgeApp.h */,
 				F818E2402032B07D00C538ED /* README.md */,
 				F83B44A92032467D002825AE /* Info-iOS.plist */,
@@ -587,6 +603,7 @@
 				CBED326820C84C8F009D32F0 /* SBATrackedMedicationDetailStepViewController.swift */,
 				CBED325920C5E349009D32F0 /* SBATrackedMedicationReviewStepViewController.swift */,
 				CB65717C20E2953000A8E61C /* SBARemoveMedicationStepViewController.swift */,
+				0356942A20EEC46C006A555A /* SBAMedicationRemindersViewController.swift */,
 			);
 			path = iOS;
 			sourceTree = "<group>";
@@ -951,10 +968,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				CBED325C20C5EBDA009D32F0 /* SBATrackedMedicationReviewCell.xib in Resources */,
+				0356943020EEC537006A555A /* MedicationReminderDetails.json in Resources */,
 				F8A5CE4F20A2BBEF00E9FD75 /* CatastrophicError.storyboard in Resources */,
 				F8C7D4132092A1F5007490BC /* SBASymptomLoggingCell.xib in Resources */,
 				CB65715320E07AE200A8E61C /* SBARoundedButtonCell.xib in Resources */,
 				CBED325F20C84641009D32F0 /* SBATrackedWeeklyScheduleCell.xib in Resources */,
+				0356942F20EEC537006A555A /* MedicationReminder.json in Resources */,
 				CB65715120E056CC00A8E61C /* SBAUnderlinedButtonCell.xib in Resources */,
 				CB65717B20E2946C00A8E61C /* SBAFormTitleTextCell.xib in Resources */,
 				CB74DC9320D88EC4008DBB6C /* SBATrackedTextfieldCell.xib in Resources */,
@@ -1005,6 +1024,7 @@
 				F8A8EAF92037834E00FED4EC /* SBAModuleIdentifier.swift in Sources */,
 				F847951E207FEA9D0024A230 /* SBATrackedItem.swift in Sources */,
 				F8F063DA20BF7E4C00DB7D9C /* SBAClientDataResult.swift in Sources */,
+				0356942B20EEC46C006A555A /* SBAMedicationRemindersViewController.swift in Sources */,
 				F80F17A32033CB1B00352C3E /* SBBSurvey+RSDTask.swift in Sources */,
 				F8A5CE4A20A2AE7100E9FD75 /* SBARootViewController.swift in Sources */,
 				F8A5CE4C20A2B5C400E9FD75 /* SBAAppDelegate.swift in Sources */,

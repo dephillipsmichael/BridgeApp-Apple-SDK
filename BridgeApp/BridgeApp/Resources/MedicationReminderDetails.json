@@ -1,0 +1,32 @@
+{
+    "identifier":"medicationReminderDetails",
+    "shouldHideActions":["skip"],
+    "progressMarkers":[],
+    "steps":[
+             {
+             "identifier": "medicationReminderDetails",
+             "type": "form",
+             "title": "How many minutes before medication time would you like to be notified?",
+             "uiHint": "list",
+             "dataType": "multipleChoice.integer",
+             "choices": [
+                         {
+                         "text": "15 minutes before",
+                         "value": 15
+                         },
+                         {
+                         "text": "30 minutes before",
+                         "value": 30
+                         },
+                         {
+                         "text": "45 minutes before",
+                         "value": 45
+                         },
+                         {
+                         "text": "60 minutes before",
+                         "value": 60
+                         }
+                         ]
+             }
+        ]
+}
