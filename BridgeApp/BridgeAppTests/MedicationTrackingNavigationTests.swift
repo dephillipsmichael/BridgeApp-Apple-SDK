@@ -86,28 +86,25 @@ class MedicationTrackingNavigationTests: XCTestCase {
         // Test fresh data source with no previous details
         let taskPath = RSDTaskPath(task: RSDTaskObject(identifier: "medTracking", stepNavigator: medTracker))
         if let dataSource = detailStep.instantiateDataSource(with: taskPath, for: Set()) as? SBATrackedMedicationDetailsDataSource {
-            XCTAssertEqual(dataSource.sections.count, 4)
-            XCTAssertEqual(dataSource.sections[0].identifier, "header")
-            XCTAssertEqual(dataSource.sections[1].identifier, "dosage")
-            XCTAssertEqual(dataSource.sections[2].identifier, "schedules")
-            XCTAssertEqual(dataSource.sections[3].identifier, "addSchedule")
+            XCTAssertEqual(dataSource.sections.count, 3)
+            XCTAssertEqual(dataSource.sections[0].identifier, "dosage")
+            XCTAssertEqual(dataSource.sections[1].identifier, "schedules")
+            XCTAssertEqual(dataSource.sections[2].identifier, "addSchedule")
             
             // Test changing the data source by adding a schedule
             dataSource.addScheduleItem()
-            XCTAssertEqual(dataSource.sections.count, 4)
-            XCTAssertEqual(dataSource.sections[0].identifier, "header")
-            XCTAssertEqual(dataSource.sections[1].identifier, "dosage")
-            XCTAssertEqual(dataSource.sections[2].identifier, "schedules")
-            XCTAssertEqual(dataSource.sections[2].tableItems.count, 2)
-            XCTAssertEqual(dataSource.sections[3].identifier, "addSchedule")
+            XCTAssertEqual(dataSource.sections.count, 3)
+            XCTAssertEqual(dataSource.sections[0].identifier, "dosage")
+            XCTAssertEqual(dataSource.sections[1].identifier, "schedules")
+            XCTAssertEqual(dataSource.sections[1].tableItems.count, 2)
+            XCTAssertEqual(dataSource.sections[2].identifier, "addSchedule")
             
             // Test changing the data source schedule at anytime to selected
             dataSource.scheduleAtAnytimeChanged(selected: true)
-            XCTAssertEqual(dataSource.sections.count, 3)
-            XCTAssertEqual(dataSource.sections[0].identifier, "header")
-            XCTAssertEqual(dataSource.sections[1].identifier, "dosage")
-            XCTAssertEqual(dataSource.sections[2].identifier, "schedules")
-            XCTAssertEqual(dataSource.sections[2].tableItems.count, 1)
+            XCTAssertEqual(dataSource.sections.count, 2)
+            XCTAssertEqual(dataSource.sections[0].identifier, "dosage")
+            XCTAssertEqual(dataSource.sections[1].identifier, "schedules")
+            XCTAssertEqual(dataSource.sections[1].tableItems.count, 1)
         } else {
             XCTFail("detail data source not instantiated")
         }
@@ -119,19 +116,18 @@ class MedicationTrackingNavigationTests: XCTestCase {
         medication.scheduleItems = Set([RSDWeeklyScheduleObject(timeOfDayString: "07:00", daysOfWeek: Set(monThruWed)), RSDWeeklyScheduleObject(timeOfDayString: "17:00", daysOfWeek: Set(friThruSun))])
         detailStep.updatePreviousAnswer(answer: medication)
         if let dataSource = detailStep.instantiateDataSource(with: taskPath, for: Set()) as? SBATrackedMedicationDetailsDataSource {
-            XCTAssertEqual(dataSource.sections.count, 4)
-            XCTAssertEqual(dataSource.sections[0].identifier, "header")
+            XCTAssertEqual(dataSource.sections.count, 3)
             
-            XCTAssertEqual(dataSource.sections[1].identifier, "dosage")
-            if let dosageTableItem = dataSource.sections[1].tableItems[0] as? RSDTextInputTableItem {
+            XCTAssertEqual(dataSource.sections[0].identifier, "dosage")
+            if let dosageTableItem = dataSource.sections[0].tableItems[0] as? RSDTextInputTableItem {
                 XCTAssertEqual(dosageTableItem.answerText, "10 mg")
             } else {
                 XCTFail("dosage table item not instantiated")
             }
             
-            XCTAssertEqual(dataSource.sections[2].identifier, "schedules")
-            XCTAssertEqual(dataSource.sections[2].tableItems.count, 2)
-            if let scheduleTableItem = dataSource.sections[2].tableItems[0] as? SBATrackedWeeklyScheduleTableItem {
+            XCTAssertEqual(dataSource.sections[1].identifier, "schedules")
+            XCTAssertEqual(dataSource.sections[1].tableItems.count, 2)
+            if let scheduleTableItem = dataSource.sections[1].tableItems[0] as? SBATrackedWeeklyScheduleTableItem {
                 XCTAssertEqual(RSDDateCoderObject.hourAndMinutesOnly.inputFormatter.string(from: scheduleTableItem.time!), "07:00")
                 XCTAssertEqual(scheduleTableItem.weekdays?.count, 3)
                 XCTAssertTrue(scheduleTableItem.weekdays!.contains(monThruWed[0]))
@@ -141,7 +137,7 @@ class MedicationTrackingNavigationTests: XCTestCase {
                 XCTFail("schedule table item 1 not instantiated")
             }
             
-            XCTAssertEqual(dataSource.sections[3].identifier, "addSchedule")
+            XCTAssertEqual(dataSource.sections[2].identifier, "addSchedule")
         } else {
             XCTFail("detail data source not instantiated")
         }
@@ -150,18 +146,17 @@ class MedicationTrackingNavigationTests: XCTestCase {
         medication.scheduleItems = Set([RSDWeeklyScheduleObject(timeOfDayString: nil, daysOfWeek: Set())])
         detailStep.updatePreviousAnswer(answer: medication)
         if let dataSource = detailStep.instantiateDataSource(with: taskPath, for: Set()) as? SBATrackedMedicationDetailsDataSource {
-            XCTAssertEqual(dataSource.sections.count, 3)
-            XCTAssertEqual(dataSource.sections[0].identifier, "header")
-            XCTAssertEqual(dataSource.sections[1].identifier, "dosage")
-            if let dosageTableItem = dataSource.sections[1].tableItems[0] as? RSDTextInputTableItem {
+            XCTAssertEqual(dataSource.sections.count, 2)
+            XCTAssertEqual(dataSource.sections[0].identifier, "dosage")
+            if let dosageTableItem = dataSource.sections[0].tableItems[0] as? RSDTextInputTableItem {
                 XCTAssertEqual(dosageTableItem.answerText, "100 mg")
             } else {
                 XCTFail("dosage table item not instantiated")
             }
             
-            XCTAssertEqual(dataSource.sections[2].identifier, "schedules")
-            XCTAssertEqual(dataSource.sections[2].tableItems.count, 1)
-            if let scheduleTableItem = dataSource.sections[2].tableItems[0] as? SBATrackedWeeklyScheduleTableItem {
+            XCTAssertEqual(dataSource.sections[1].identifier, "schedules")
+            XCTAssertEqual(dataSource.sections[1].tableItems.count, 1)
+            if let scheduleTableItem = dataSource.sections[1].tableItems[0] as? SBATrackedWeeklyScheduleTableItem {
                 XCTAssertNil(scheduleTableItem.time)
                 XCTAssertEqual(scheduleTableItem.weekdays?.count, 0)
             } else {
@@ -232,6 +227,7 @@ class MedicationTrackingNavigationTests: XCTestCase {
         
         taskResult.appendStepHistory(with: secondResult)
         
+        (secondStep as? SBATrackedItemsReviewStepObject)?.nextStepIdentifier = "medA2"
         let (thirdStep, _) = medTracker.step(after: secondStep, with: &taskResult)
         XCTAssertNotNil(thirdStep)
         XCTAssertEqual(thirdStep?.identifier, "medA2")
@@ -392,8 +388,6 @@ class MedicationTrackingNavigationTests: XCTestCase {
         let clientData = try! initialResult.clientData()
         
         medTracker.previousClientData = clientData
-
-        var taskResult: RSDTaskResult = RSDTaskResultObject(identifier: "logMedications")
         
         // Check initial state
         XCTAssertNotNil(medTracker.getSelectionStep())
@@ -414,19 +408,22 @@ class MedicationTrackingNavigationTests: XCTestCase {
             XCTFail("Step not found or not of expected type.")
         }
 
+        // TODO: mdephillips 7/4/18 happy 4th! add the logging step back in once that is completed
+        
+//        var taskResult: RSDTaskResult = RSDTaskResultObject(identifier: "logMedications")
         // For the case where the meds have been set, this should jump to logging the medication results.
-        let (firstStep, _) = medTracker.step(after: nil, with: &taskResult)
+//        let (firstStep, _) = medTracker.step(after: nil, with: &taskResult)
         
-        guard let loggingStep = firstStep as? SBAMedicationLoggingStepObject else {
-            XCTFail("First step not of expected type. For a follow-up run should start with logging step.")
-            return
-        }
-        
-        XCTAssertEqual(loggingStep.result?.selectedAnswers.count, 2)
-        XCTAssertFalse(medTracker.hasStep(after: loggingStep, with: taskResult))
-        XCTAssertFalse(medTracker.hasStep(before: loggingStep, with: taskResult))
-        XCTAssertNil(medTracker.step(before: loggingStep, with: &taskResult))
-        XCTAssertNil(medTracker.step(after: loggingStep, with: &taskResult).step)
+//        guard let loggingStep = firstStep as? SBAMedicationLoggingStepObject else {
+//            XCTFail("First step not of expected type. For a follow-up run should start with logging step.")
+//            return
+//        }
+//
+//        XCTAssertEqual(loggingStep.result?.selectedAnswers.count, 2)
+//        XCTAssertFalse(medTracker.hasStep(after: loggingStep, with: taskResult))
+//        XCTAssertFalse(medTracker.hasStep(before: loggingStep, with: taskResult))
+//        XCTAssertNil(medTracker.step(before: loggingStep, with: &taskResult))
+//        XCTAssertNil(medTracker.step(after: loggingStep, with: &taskResult).step)
     }
     
     // MARK: Shared tests

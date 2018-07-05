@@ -39,6 +39,12 @@ open class SBATrackedMedicationReviewStepViewController: RSDTableStepViewControl
         return self.step as? SBATrackedItemsReviewStepObject
     }
     
+    override open func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        // This will clear any selected review cells
+        (self.step as? SBATrackedItemsReviewStepObject)?.nextStepIdentifier = nil
+    }
+    
     override open func registerReuseIdentifierIfNeeded(_ reuseIdentifier: String) {
         guard !_registeredIdentifiers.contains(reuseIdentifier) else { return }
         _registeredIdentifiers.insert(reuseIdentifier)
@@ -52,6 +58,7 @@ open class SBATrackedMedicationReviewStepViewController: RSDTableStepViewControl
     private var _registeredIdentifiers = Set<String>()
     
     open override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
         if let reviewDataSource = self.tableData as? SBATrackedMedicationReviewDataSource,
         let selectedIdentifier = reviewDataSource.tableItem(at: indexPath)?.identifier {
             reviewDataSource.reviewItemSelected(identifier: selectedIdentifier)
@@ -59,18 +66,12 @@ open class SBATrackedMedicationReviewStepViewController: RSDTableStepViewControl
         }
     }
     
-    override open func actionTapped(with actionType: RSDUIActionType) -> Bool {
-//        if actionType == .navigation(.goForward) {
-//            // TODO: mdephillips 6/27/18 move to med logging
-//            weak var weakSelf = self
-//            dismiss(animated: true, completion: {
-//                weakSelf?.dismiss(animated: true, completion: nil)
-//            })
-//            return true
-//        } else {
-//            return super.actionTapped(with: actionType)
-//        }
-        return super.actionTapped(with: actionType)
+    override open func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = super.tableView(tableView, cellForRowAt: indexPath)
+        cell.selectedBackgroundView = UIView()
+        cell.selectedBackgroundView?.backgroundColor = UIColor.rsd_choiceCellBackgroundHighlighted
+        cell.selectionStyle = .gray
+        return cell
     }
     
     public func taskController(_ taskController: RSDTaskController, didFinishWith reason: RSDTaskFinishReason, error: Error?) {        

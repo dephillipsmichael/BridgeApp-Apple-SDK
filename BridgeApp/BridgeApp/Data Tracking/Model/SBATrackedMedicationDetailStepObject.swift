@@ -74,14 +74,13 @@ open class SBATrackedMedicationDetailStepObject : SBATrackedItemDetailsStepObjec
 open class SBATrackedMedicationDetailsDataSource : RSDTableDataSource {
     
     enum FieldIdentifiers : String {
-        case header, dosage, schedules, addSchedule
+        case dosage, schedules, addSchedule
         
         func sectionIndex() -> Int {
             switch self {
-                case .header:       return 0
-                case .dosage:       return 1
-                case .schedules:    return 2
-                case .addSchedule:  return 3
+                case .dosage:       return 0
+                case .schedules:    return 1
+                case .addSchedule:  return 2
             }
         }
     }
@@ -113,18 +112,11 @@ open class SBATrackedMedicationDetailsDataSource : RSDTableDataSource {
         
         let previousAnswer = (step as? SBATrackedMedicationDetailStepObject)?.previousAnswer as? SBAMedicationAnswer
 
-        sections.append(createHeaderSection())
         sections.append(createDosageSection(with: previousAnswer))
         sections.append(createSchedulesSection(with: previousAnswer))
         if shouldCreateAddScheduleSection(with: previousAnswer) {
             sections.append(createAddScheduleSection())
         }
-    }
-    
-    fileprivate func createHeaderSection() -> RSDTableSection {
-        let headerTableItem = RSDTableItem(identifier: FieldIdentifiers.header.stringValue, rowIndex: 0, reuseIdentifier: FieldIdentifiers.header.stringValue)
-        let headerSection = RSDTableSection(identifier: FieldIdentifiers.header.stringValue, sectionIndex: FieldIdentifiers.header.sectionIndex(), tableItems: [headerTableItem])
-        return headerSection
     }
     
     fileprivate func createDosageSection(with previousAnswer: SBAMedicationAnswer?) -> RSDTableSection {

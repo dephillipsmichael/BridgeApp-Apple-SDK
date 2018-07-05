@@ -86,11 +86,17 @@ open class SBAMedicationTrackingStepNavigator : SBATrackedItemsStepNavigator {
             // Because we can visit a details step multiple times, we need to make sure
             // the previous answer is up to date for the step
             detailStep.updatePreviousAnswer(answer: returnValue?.1)
+            detailStep.title = returnValue?.1.identifier
         }
         return returnValue
     }
     
     override open func step(after step: RSDStep?, with result: inout RSDTaskResult) -> (step: RSDStep?, direction: RSDStepDirection) {
+        
+        guard let _ = step?.identifier else {
+            // TODO: mdephillips 7/3/18 remove this conditional once logging step is complete
+            return (getSelectionStep(), .forward)
+        }
         
         // Check if it is a detail step, if so, reverse to the review step
         if isDetailStep(with: step?.identifier) {
@@ -111,6 +117,12 @@ open class SBAMedicationTrackingStepNavigator : SBATrackedItemsStepNavigator {
                 nextStep = getReviewStep()
             }
             return (nextStep, .reverse)
+        }
+        
+        if let reviewStep = step as? SBATrackedItemsReviewStepObject,
+            reviewStep.nextStepIdentifier == nil {            
+            // TODO: mdephillips 7/3/18 move to reminders screen, for now end
+            return (nil, .forward)
         }
         
         return super.step(after: step, with: &result)

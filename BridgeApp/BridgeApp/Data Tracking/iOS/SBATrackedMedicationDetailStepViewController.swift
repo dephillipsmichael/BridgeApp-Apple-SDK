@@ -33,21 +33,9 @@
 
 import UIKit
 
-open class SBATrackedMedicationDetailStepViewController: RSDTableStepViewController, RSDTaskViewControllerDelegate {
+open class SBATrackedMedicationDetailStepViewController: RSDTableStepViewController, RSDTaskViewControllerDelegate, SBATrackedMedicationNavigationHeaderViewDelegate {
     
     var selectedIndexPath: IndexPath?
-    
-    var underlinedButtonNib: UINib {
-        let bundle = Bundle(for: SBATrackedMedicationDetailStepViewController.self)
-        let nibName = "SBAUnderlinedButtonCell"
-        return UINib(nibName: nibName, bundle: bundle)
-    }
-    
-    var roundedButtonNib: UINib {
-        let bundle = Bundle(for: SBATrackedMedicationDetailStepViewController.self)
-        let nibName = "SBARoundedButtonCell"
-        return UINib(nibName: nibName, bundle: bundle)
-    }
     
     override open var isForwardEnabled: Bool {
         if let source = tableData as? SBATrackedMedicationDetailsDataSource {
@@ -56,15 +44,32 @@ open class SBATrackedMedicationDetailStepViewController: RSDTableStepViewControl
         return true
     }
     
+    override open func viewDidLoad() {
+        super.viewDidLoad()
+        self.createCustomNavigationHeader()
+    }
+    
+    func createCustomNavigationHeader() {
+        let header =  SBATrackedMedicationNavigationHeaderView()
+        header.delegate = self
+        header.backgroundColor = UIColor.appBackgroundDark
+        header.usesLightStyle = true
+        header.underlinedButtonText = Localization.localizedString("MEDICATION_REMOVE_MEDICATION")
+        self.navigationHeader = header
+        self.tableView.tableHeaderView = header
+    }
+    
+    override open func setupNavigationView(_ navigationView: RSDStepNavigationView, placement: RSDColorPlacement) {
+        super.setupNavigationView(navigationView, placement: placement)
+        navigationView.cancelButton?.setImage(UIImage(named: "BackButtonIcon"), for: .normal)
+    }
+    
     override open func registerReuseIdentifierIfNeeded(_ reuseIdentifier: String) {
         guard !_registeredIdentifiers.contains(reuseIdentifier) else { return }
         _registeredIdentifiers.insert(reuseIdentifier)
         
-        if reuseIdentifier == SBATrackedMedicationDetailsDataSource.FieldIdentifiers.header.stringValue {
-            tableView.register(underlinedButtonNib, forCellReuseIdentifier: reuseIdentifier)
-            return
-        } else if reuseIdentifier == SBATrackedMedicationDetailsDataSource.FieldIdentifiers.addSchedule.stringValue {
-            tableView.register(roundedButtonNib, forCellReuseIdentifier: reuseIdentifier)
+        if reuseIdentifier == SBATrackedMedicationDetailsDataSource.FieldIdentifiers.addSchedule.stringValue {
+            tableView.register(SBARoundedButtonCell.nib, forCellReuseIdentifier: reuseIdentifier)
             return
         }
         
@@ -104,12 +109,7 @@ open class SBATrackedMedicationDetailStepViewController: RSDTableStepViewControl
             dosageCell.textField.delegate = self
             dosageCell.textField.text = textTableItem.answerText
         }
-        if let buttonCell = cell as? RSDButtonCell {
-            if let _ = buttonCell.actionButton as? RSDUnderlinedButton {
-                    buttonCell.actionButton.setTitle(Localization.localizedString("MEDICATION_REMOVE_MEDICATION"), for: .normal)
-                buttonCell.actionButton.setTitleColor(UIColor.primaryTintColor, for: .normal)
-                buttonCell.backgroundView?.backgroundColor = UIColor.appBackgroundDark
-            }
+        if let buttonCell = cell as? SBARoundedButtonCell {
             if let _ = buttonCell.actionButton as? RSDRoundedButton {
                 buttonCell.actionButton.setTitle(Localization.localizedString("ADD_ANOTHER_SCHEDULE_BUTTON"), for: .normal)
             }
@@ -129,7 +129,7 @@ open class SBATrackedMedicationDetailStepViewController: RSDTableStepViewControl
         super.didTapButton(on: cell)
     }
     
-    func removeMedicationTapped() {
+    @objc func removeMedicationTapped() {
         let removeStep = SBARemoveMedicationStepObject(identifier: step.identifier)
         removeStep.actions = [.navigation(.goForward): RSDUIActionObject(buttonTitle: Localization.localizedString("MEDICATION_REMOVE_BUTTON_TEXT"))]
         var navigator = RSDConditionalStepNavigatorObject(with: [removeStep])
@@ -232,6 +232,10 @@ open class SBATrackedMedicationDetailStepViewController: RSDTableStepViewControl
         _endTimeEditingIfNeeded(false)
         super.goForward()
     }
+    
+    public func underlinedButtonTapped() {
+        removeMedicationTapped()
+    }
 }
 
 extension SBATrackedMedicationDetailStepViewController : SBATrackedWeeklyScheduleCellDelegate {
@@ -324,6 +328,11 @@ open class SBATrackedTextfieldCell : RSDTableViewCell {
         let nibName = String(describing: SBATrackedTextfieldCell.self)
         return UINib(nibName: nibName, bundle: bundle)
     }
+    
+    override open func awakeFromNib() {
+        super.awakeFromNib()
+        self.contentView.backgroundColor = UIColor.darkPrimaryTintColor
+    }
 }
 
 open class TrackedTextField: RSDStepTextField {
@@ -340,6 +349,21 @@ open class TrackedTextField: RSDStepTextField {
     
     override open func editingRect(forBounds bounds: CGRect) -> CGRect {
         return UIEdgeInsetsInsetRect(bounds, padding)
+    }
+}
+
+open class SBARoundedButtonCell: RSDButtonCell {
+    
+    /// The nib to use with this cell. Default will instantiate a `SBARoundedButtonCell`.
+    open class var nib: UINib {
+        let bundle = Bundle(for: SBARoundedButtonCell.self)
+        let nibName = String(describing: SBARoundedButtonCell.self)
+        return UINib(nibName: nibName, bundle: bundle)
+    }
+    
+    override open func awakeFromNib() {
+        super.awakeFromNib()
+        self.contentView.backgroundColor = UIColor.darkPrimaryTintColor
     }
 }
 
@@ -378,6 +402,7 @@ open class SBATrackedWeeklyScheduleCell: RSDTableViewCell {
     
     override open func awakeFromNib() {
         super.awakeFromNib()
+        self.contentView.backgroundColor = UIColor.darkPrimaryTintColor
         self.titleLabel.textColor = UIColor.rsd_headerTitleLabel
         for label in self.labels {
             label.textColor = UIColor.rsd_headerTitleLabel
@@ -485,5 +510,65 @@ open class SBAInstructionImage: RSDEmbeddedIconVendor, RSDImageThemeElement, RSD
     public func fetchImage(for size: CGSize, callback: @escaping ((String?, UIImage?) -> Void)) {
         let image = UIImage(named: self.imageIdentifier)
         callback(self.imageIdentifier, image)
+    }
+}
+
+public protocol SBATrackedMedicationNavigationHeaderViewDelegate {
+    func underlinedButtonTapped()
+}
+
+open class SBATrackedMedicationNavigationHeaderView: RSDTableStepHeaderView {
+    
+    private var _underlinedButtonContraints: [NSLayoutConstraint] = []
+    
+    var delegate: SBATrackedMedicationNavigationHeaderViewDelegate?
+    var underlinedButtonText: String?
+    /// The label for displaying step detail text.
+    @IBOutlet open var underlinedButton: RSDUnderlinedButton?
+    
+    override open func updateVerticalConstraints(currentLastView: UIView?) -> (firstView: UIView?, lastView: UIView?) {
+        addUnderlinedButtonIfNeeded()
+        var results = super.updateVerticalConstraints(currentLastView: currentLastView)
+        
+        // Remove existing constraints for the underlined button
+        NSLayoutConstraint.deactivate(_underlinedButtonContraints)
+        _underlinedButtonContraints.removeAll()
+        
+        // Add the underlined button under the title label
+        if let underlinedButtonUnwrapped = self.underlinedButton,
+            let titleLabelUnwrapped = super.titleLabel {
+            _underlinedButtonContraints.append(contentsOf:
+                underlinedButtonUnwrapped.rsd_alignBelow(view: titleLabelUnwrapped, padding: constants.verticalSpacing))
+        }
+        
+        results.lastView = underlinedButton
+        return results
+    }
+    
+    func addUnderlinedButtonIfNeeded() {
+        guard underlinedButton == nil else { return }
+        underlinedButton = addUnderlinedButton(font: UIFont.rsd_headerTextLabel, color: UIColor.rsd_headerTextLabel)
+    }
+    
+    /// Convenience method for adding an underlined button.
+    open func addUnderlinedButton(font: UIFont, color: UIColor) -> RSDUnderlinedButton {
+        let button = RSDUnderlinedButton(type: .system)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.titleLabel?.font = font
+        button.setTitleColor(color, for: .normal)
+        button.titleLabel?.textAlignment = .center
+        button.titleLabel?.preferredMaxLayoutWidth = constants.labelMaxLayoutWidth
+        button.setTitle(underlinedButtonText, for: .normal)
+        button.addTarget(self, action: #selector(self.underlineButtonTapped), for: .touchUpInside)
+        self.addSubview(button)
+        
+        button.rsd_alignToSuperview([.leading, .trailing], padding: constants.sideMargin)
+        button.rsd_makeHeight(.greaterThanOrEqual, 60.0)
+        
+        return button
+    }
+    
+    @objc func underlineButtonTapped() {
+        self.delegate?.underlinedButtonTapped()
     }
 }
