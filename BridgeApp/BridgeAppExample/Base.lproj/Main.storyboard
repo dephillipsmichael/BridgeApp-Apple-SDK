@@ -6,6 +6,8 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
+        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -65,5 +67,113 @@
             </objects>
             <point key="canvasLocation" x="1021.6" y="118.29085457271366"/>
         </scene>
+        <!--Remove Medication Step View Controller-->
+        <scene sceneID="M4N-Wh-Nb7">
+            <objects>
+                <viewController storyboardIdentifier="SBARemoveMedicationStepViewController" id="JOD-Gc-w2M" customClass="SBARemoveMedicationStepViewController" customModule="BridgeApp" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="mGN-2P-G68" customClass="RSDStepNavigationView" customModule="ResearchUI">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="j6Y-08-4lU" userLabel="Status Background" customClass="RSDStatusBarBackgroundView" customModule="ResearchUI">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="20"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="20" id="hfh-s5-wLM"/>
+                                </constraints>
+                            </view>
+                            <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="vFr-Gu-XTJ" customClass="MCTCompletionGradient" customModule="MotorControl">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="263"/>
+                            </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="O4h-zE-3wa" userLabel="Header">
+                                <rect key="frame" x="0.0" y="20" width="375" height="225"/>
+                                <subviews>
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" verticalCompressionResistancePriority="250" image="removeInstruction" translatesAutoresizingMaskIntoConstraints="NO" id="CWN-9x-Pbz">
+                                        <rect key="frame" x="32" y="32" width="311" height="161"/>
+                                        <color key="backgroundColor" red="0.50980392159999999" green="0.8980392157" blue="0.71372549019999998" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <color key="tintColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    </imageView>
+                                </subviews>
+                                <color key="backgroundColor" red="0.93333333333333335" green="0.37647058823529411" blue="0.4392156862745098" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="bottom" secondItem="CWN-9x-Pbz" secondAttribute="bottom" constant="32" id="0al-hz-Z2Y"/>
+                                    <constraint firstItem="CWN-9x-Pbz" firstAttribute="top" secondItem="O4h-zE-3wa" secondAttribute="top" constant="32" id="QUv-Xt-IqV"/>
+                                    <constraint firstAttribute="trailing" secondItem="CWN-9x-Pbz" secondAttribute="trailing" constant="32" id="im9-Nq-cSt"/>
+                                    <constraint firstItem="CWN-9x-Pbz" firstAttribute="leading" secondItem="O4h-zE-3wa" secondAttribute="leading" constant="32" id="nQb-Zw-xy2"/>
+                                </constraints>
+                            </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="09K-uc-dkI" customClass="RSDGenericNavigationFooterView" customModule="ResearchUI">
+                                <rect key="frame" x="0.0" y="570" width="375" height="97"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="97" placeholder="YES" id="ArT-VE-SNI"/>
+                                </constraints>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="boolean" keyPath="isBackHidden" value="YES"/>
+                                </userDefinedRuntimeAttributes>
+                            </view>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" verticalCompressionResistancePriority="1000" text="Are you sure you want to remove Sinemet from your current medication list?" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="SM6-CN-3fb">
+                                <rect key="frame" x="32" y="293" width="311" height="86"/>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="24"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ON3-q3-I9l" userLabel="Back Button">
+                                <rect key="frame" x="15" y="30" width="32" height="32"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="32" id="KCJ-QC-wl2"/>
+                                    <constraint firstAttribute="width" secondItem="ON3-q3-I9l" secondAttribute="height" multiplier="1:1" id="Udo-sj-jhv"/>
+                                </constraints>
+                                <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <state key="normal" image="closeActivity"/>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="950" text="Removing this medication will remove it from your Medications list. If you wish to re-add it, it will not be saved." textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YsT-wq-i5U">
+                                <rect key="frame" x="32" y="397" width="311" height="64.5"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="j6Y-08-4lU" firstAttribute="top" secondItem="mGN-2P-G68" secondAttribute="top" id="08U-d7-hGF"/>
+                            <constraint firstItem="ON3-q3-I9l" firstAttribute="width" secondItem="ON3-q3-I9l" secondAttribute="height" multiplier="1:1" id="0oy-Uh-VYN"/>
+                            <constraint firstItem="SM6-CN-3fb" firstAttribute="leading" secondItem="ey6-at-svL" secondAttribute="leading" constant="32" id="1Kc-4Q-JsD"/>
+                            <constraint firstItem="O4h-zE-3wa" firstAttribute="top" secondItem="j6Y-08-4lU" secondAttribute="bottom" id="1yw-tA-iIi"/>
+                            <constraint firstItem="09K-uc-dkI" firstAttribute="trailing" secondItem="ey6-at-svL" secondAttribute="trailing" id="78A-BG-g4a"/>
+                            <constraint firstItem="ON3-q3-I9l" firstAttribute="top" secondItem="ey6-at-svL" secondAttribute="top" constant="10" id="7Ha-BC-MUr"/>
+                            <constraint firstItem="ey6-at-svL" firstAttribute="trailing" secondItem="YsT-wq-i5U" secondAttribute="trailing" constant="32" id="8Xg-TN-Igw"/>
+                            <constraint firstItem="SM6-CN-3fb" firstAttribute="top" secondItem="vFr-Gu-XTJ" secondAttribute="bottom" constant="30" id="F9d-wC-KpG"/>
+                            <constraint firstItem="SM6-CN-3fb" firstAttribute="top" secondItem="O4h-zE-3wa" secondAttribute="bottom" constant="48" id="Iu9-W6-dvM"/>
+                            <constraint firstItem="vFr-Gu-XTJ" firstAttribute="trailing" secondItem="ey6-at-svL" secondAttribute="trailing" id="MQX-Y4-JXi"/>
+                            <constraint firstItem="YsT-wq-i5U" firstAttribute="top" secondItem="SM6-CN-3fb" secondAttribute="bottom" constant="18" id="RsQ-rt-RWv"/>
+                            <constraint firstItem="O4h-zE-3wa" firstAttribute="trailing" secondItem="ey6-at-svL" secondAttribute="trailing" id="cZT-SK-S3c"/>
+                            <constraint firstItem="j6Y-08-4lU" firstAttribute="leading" secondItem="mGN-2P-G68" secondAttribute="leading" id="fxG-aA-RCL"/>
+                            <constraint firstItem="ey6-at-svL" firstAttribute="trailing" secondItem="SM6-CN-3fb" secondAttribute="trailing" constant="32" id="gRF-pD-8Zh"/>
+                            <constraint firstAttribute="trailing" secondItem="j6Y-08-4lU" secondAttribute="trailing" id="iVe-Kl-rag"/>
+                            <constraint firstItem="ON3-q3-I9l" firstAttribute="leading" secondItem="ey6-at-svL" secondAttribute="leading" constant="15" id="jbY-SF-E36"/>
+                            <constraint firstItem="YsT-wq-i5U" firstAttribute="leading" secondItem="ey6-at-svL" secondAttribute="leading" constant="32" id="kGP-Z8-KoZ"/>
+                            <constraint firstItem="09K-uc-dkI" firstAttribute="leading" secondItem="ey6-at-svL" secondAttribute="leading" id="q15-XU-nLQ"/>
+                            <constraint firstItem="O4h-zE-3wa" firstAttribute="leading" secondItem="ey6-at-svL" secondAttribute="leading" id="qgG-Ch-tSg"/>
+                            <constraint firstItem="09K-uc-dkI" firstAttribute="bottom" secondItem="ey6-at-svL" secondAttribute="bottom" id="uQP-DE-3Nd"/>
+                            <constraint firstItem="09K-uc-dkI" firstAttribute="top" relation="greaterThanOrEqual" secondItem="YsT-wq-i5U" secondAttribute="bottom" constant="10" id="ugR-ZE-mJN"/>
+                            <constraint firstItem="vFr-Gu-XTJ" firstAttribute="top" secondItem="j6Y-08-4lU" secondAttribute="top" id="usm-bC-abW"/>
+                            <constraint firstItem="vFr-Gu-XTJ" firstAttribute="leading" secondItem="ey6-at-svL" secondAttribute="leading" id="vBP-HU-e3C"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="ey6-at-svL"/>
+                        <connections>
+                            <outlet property="cancelButton" destination="ON3-q3-I9l" id="Tgm-aA-g58"/>
+                        </connections>
+                    </view>
+                    <connections>
+                        <outlet property="navigationFooter" destination="09K-uc-dkI" id="fR7-Eg-QrT"/>
+                        <outlet property="statusBarBackgroundView" destination="j6Y-08-4lU" id="feY-ns-8HA"/>
+                        <outlet property="titleLabel" destination="SM6-CN-3fb" id="cf4-xI-iQ7"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="SFx-5m-9lk" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2824.8000000000002" y="117.39130434782609"/>
+        </scene>
     </scenes>
+    <resources>
+        <image name="closeActivity" width="32" height="32"/>
+        <image name="removeInstruction" width="190" height="161"/>
+    </resources>
 </document>

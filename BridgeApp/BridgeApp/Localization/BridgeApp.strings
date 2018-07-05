@@ -56,6 +56,14 @@
 "EVENING_MEDICATION_SECTION_TITLE" = "Evening medications";
 "MISSED_MEDICATION_SECTION_TITLE" = "Missed medications";
 "MEDICATION_ANYTIME" = "Anytime";
+"MEDICATION_DAY_OF_WEEK_%@" = "On which days do you want to take %@";
+"MEDICATION_SCHEDULE_EVERYDAY" = "Every day";
+"MEDICATION_LIST_TITLE" = "Medication list";
+"MEDICATION_EDIT_LIST_TITLE" = "Edit medication list";
+"MEDICATION_REMOVE_TEXT" = "Removing this medication will remove it from your Medications list. If you wish to re-add it, it will not be saved.";
+"MEDICATION_REMOVE_BUTTON_TEXT" = "Yes, remove medication";
+"MEDICATION_REMOVE_MEDICATION" = "Remove medication";
+"MEDICATION_REMOVE_TITLE_%@" = "Are you sure you want to remove %@ from your current medication list?";
 
 /* Failure messages */
 "NETWORK_FAILURE_TITLE" = "Could Not Complete"; // Title for a step or alert indicating a network failure

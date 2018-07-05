@@ -52,16 +52,15 @@ open class SBAMedicationTrackingStepNavigator : SBATrackedItemsStepNavigator {
     
     override open class func buildReviewStep(items: [SBATrackedItem], sections: [SBATrackedSection]?) -> SBATrackedItemsStep? {
         let stepId = StepIdentifiers.review.stringValue
-        let step = SBATrackedItemsReviewStepObject(identifier: stepId, items: items, sections: sections, type: .review)
-        
+        let step = SBATrackedMedicationReviewStepObject(identifier: stepId, items: items, sections: sections, type: .review)
+
         // Set the default values for the title and subtitle to display depending upon state.
         step.addDetailsTitle = Localization.localizedString("MEDICATION_ADD_DETAILS_TITLE")
         step.addDetailsSubtitle = Localization.localizedString("MEDICATION_ADD_DETAILS_DETAIL")
         step.reviewTitle = Localization.localizedString("MEDICATION_REVIEW_TITLE")
-        
         // Add the customization of the add more and go forward buttons.
-        let addMoreAction = RSDUIActionObject(buttonTitle: Localization.localizedString("MEDICATION_ADD_MORE_BUTTON"))
-        let goForwardAction = RSDUIActionObject(buttonTitle: Localization.localizedString("BUTTON_SUBMIT"))
+        let addMoreAction = RSDUIActionObject(buttonTitle: Localization.localizedString("MEDICATION_EDIT_LIST_TITLE"))
+        let goForwardAction = RSDUIActionObject(buttonTitle: Localization.localizedString("BUTTON_SAVE"))
         step.actions = [.navigation(.goForward) : goForwardAction,
                         .addMore : addMoreAction]
         
@@ -69,7 +68,8 @@ open class SBAMedicationTrackingStepNavigator : SBATrackedItemsStepNavigator {
     }
     
     override open class func buildDetailSteps(items: [SBATrackedItem], sections: [SBATrackedSection]?) -> [SBATrackedItemDetailsStep]? {
-        return [SBAMedicationDetailsStepObject(identifier: StepIdentifiers.addDetails.stringValue)]
+        let detailStepObject = SBATrackedMedicationDetailStepObject(identifier: SBATrackedItemsStepNavigator.StepIdentifiers.addDetails.stringValue, type: .medicationDetails)
+        return [detailStepObject]
     }
     
     override open class func buildLoggingStep(items: [SBATrackedItem], sections: [SBATrackedSection]?) -> SBATrackedItemsStep {
@@ -78,6 +78,59 @@ open class SBAMedicationTrackingStepNavigator : SBATrackedItemsStepNavigator {
     
     override open func instantiateLoggingResult() -> SBATrackedItemsCollectionResult {
         return SBAMedicationTrackingResult(identifier: self.reviewStep!.identifier)
+    }
+    
+    override open func getDetailStep(with identifier: String) -> (RSDStep, SBATrackedItemAnswer)? {
+        let returnValue = super.getDetailStep(with: identifier)
+        if let detailStep = returnValue?.0 as? SBATrackedMedicationDetailStepObject {
+            // Because we can visit a details step multiple times, we need to make sure
+            // the previous answer is up to date for the step
+            detailStep.updatePreviousAnswer(answer: returnValue?.1)
+            detailStep.title = returnValue?.1.identifier
+        }
+        return returnValue
+    }
+    
+    override open func step(after step: RSDStep?, with result: inout RSDTaskResult) -> (step: RSDStep?, direction: RSDStepDirection) {
+        
+        guard let _ = step?.identifier else {
+            // TODO: mdephillips 7/3/18 remove this conditional once logging step is complete
+            return (getSelectionStep(), .forward)
+        }
+        
+        // Check if it is a detail step, if so, reverse to the review step
+        if isDetailStep(with: step?.identifier) {
+            var nextStep: RSDStep?
+            if let _ = result.stepHistory.last as? SBARemoveMedicationResultObject {
+                // Result of the step is to remove the medication
+                let selectedIdentifiers = (result.findResult(for: self.selectionStep) as? SBATrackedItemsResult)?.selectedIdentifiers.filter({ $0 != step?.identifier })
+                updateSelectedInMemoryResult(to: selectedIdentifiers, with: self.items)
+                if selectedIdentifiers?.count == 0 {
+                    // If there are no more selected medications, go back to selection step
+                    nextStep = getSelectionStep()
+                } else {
+                    nextStep = getReviewStep()
+                }
+            } else {
+                // When moving forward, always update the in-memory result before continuing.
+                updateInMemoryResult(from: result, using: step)
+                nextStep = getReviewStep()
+            }
+            return (nextStep, .reverse)
+        }
+        
+        if let reviewStep = step as? SBATrackedItemsReviewStepObject,
+            reviewStep.nextStepIdentifier == nil {            
+            // TODO: mdephillips 7/3/18 move to reminders screen, for now end
+            return (nil, .forward)
+        }
+        
+        return super.step(after: step, with: &result)
+    }
+    
+    func isDetailStep(with identifier: String?) -> Bool {
+        guard let identifierUnwrapped = identifier else { return false }
+        return self.items.contains(where: { $0.identifier == identifierUnwrapped })
     }
 }
 
@@ -95,40 +148,6 @@ extension SBAMedication {
     public var addDetailsIdentifier: String? {
         return (self.isContinuousInjection ?? false) ? nil : SBATrackedItemsStepNavigator.StepIdentifiers.addDetails.stringValue
     }
-}
-
-/// The medication details form step overrides the base class implementation to add an input field
-/// for the dosage.
-open class SBAMedicationDetailsStepObject : SBATrackedItemDetailsStepObject {
-    
-    fileprivate enum FieldIdentifiers : String, CodingKey {
-        case dosage
-    }
-    
-    /// Add the dosage input field.
-    override open class func buildInputFields() -> [RSDInputField] {
-        let inputField = RSDInputFieldObject(identifier: FieldIdentifiers.dosage.stringValue, dataType: .base(.string), uiHint: .textfield, prompt: Localization.localizedString("MEDICATION_DOSAGE_PROMPT"))
-        inputField.placeholder = Localization.localizedString("MEDICATION_DOSAGE_PLACEHOLDER")
-        return [inputField]
-    }
-    
-    /// Return the dosage field identifier.
-    override open class func inputFieldIdentifiers() -> [String] {
-        return [FieldIdentifiers.dosage.rawValue]
-    }
-    
-    /// Override and return an `SBAMedicationAnswer`.
-    override open func answer(from taskResult: RSDTaskResult) -> SBATrackedItemAnswer? {
-        guard let answerMap = self.answerMap(from: taskResult) else { return nil }
-        var medication = SBAMedicationAnswer(identifier: self.identifier)
-        medication.dosage = answerMap.answers[FieldIdentifiers.dosage.stringValue] as? String
-        medication.scheduleItems = Set(answerMap.schedules)
-        return medication
-    }
-    
-    // TODO: syoung 02/27/2018 customize the daysOfWeek input field title to include medication
-    // and time of the day.
-    // "MEDICATION_DAYS_OF_WEEK_TITLE_%1$@_at_%2$@" = "Which days do you take %1$@ at %2$@?";
 }
 
 /// A medication item includes details for displaying a given medication.

@@ -258,7 +258,7 @@ open class SBATrackedItemsStepNavigator : Decodable, RSDTrackingStepNavigator {
         
         if previousStep?.identifier == self.selectionStep.identifier {
             let selectedIdentifiers = (taskResult.findResult(for: self.selectionStep) as? SBATrackedItemsResult)?.selectedIdentifiers
-            _inMemoryResult.updateSelected(to: selectedIdentifiers, with: self.items)
+            self.updateSelectedInMemoryResult(to: selectedIdentifiers, with: self.items)
         }
         else if let reviewStep = self.reviewStep, previousStep?.identifier == reviewStep.identifier {
             if let newResult = taskResult.findResult(for: reviewStep) as? SBATrackedItemsCollectionResult {
@@ -272,6 +272,11 @@ open class SBATrackedItemsStepNavigator : Decodable, RSDTrackingStepNavigator {
             let answer = detailsStep.answer(from: taskResult) {
             _inMemoryResult.updateDetails(to: answer)
         }
+    }
+    
+    // Exposed for sub-classes to call
+    func updateSelectedInMemoryResult(to selectedIdentifiers: [String]?, with items: [SBATrackedItem]) {
+        _inMemoryResult.updateSelected(to: selectedIdentifiers, with: self.items)
     }
     
     /// Instantiate the appropriate result that can be used for logging and review.

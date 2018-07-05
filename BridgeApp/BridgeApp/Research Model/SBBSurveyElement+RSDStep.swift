@@ -63,11 +63,11 @@ extension SBBSurveyElement {
 extension SBBSurveyElement : RSDUIStep {
     
     public var text: String? {
-        return self.prompt
+        return self.prompt.sba_parseNewLine()
     }
     
     public var detail: String? {
-        return self.promptDetail
+        return self.promptDetail?.sba_parseNewLine()
     }
     
     public var footnote: String? {
@@ -80,6 +80,16 @@ extension SBBSurveyElement : RSDUIStep {
     
     public func instantiateStepResult() -> RSDResult {
         return SBASurveyConfiguration.shared.instantiateStepResult(for: self) ?? RSDResultObject(identifier: self.identifier)
+    }
+    
+    fileprivate func parseNewLine(_ string: String?) -> String? {
+        return string?.replacingOccurrences(of: "\\n", with: "\n")
+    }
+}
+
+extension String {
+    fileprivate func sba_parseNewLine() -> String? {
+        return self.replacingOccurrences(of: "\\n", with: "\n")
     }
 }
 

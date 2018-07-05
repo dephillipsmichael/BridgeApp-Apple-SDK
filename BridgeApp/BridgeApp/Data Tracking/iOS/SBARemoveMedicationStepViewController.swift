@@ -1,5 +1,5 @@
 //
-//  SBBScheduledActivity+ResearchModel.swift
+//  SBARemoveMedicationStepViewController.swift
 //  BridgeApp (iOS)
 //
 //  Copyright © 2018 Sage Bionetworks. All rights reserved.
@@ -31,51 +31,31 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 
-import Foundation
+import UIKit
 
-extension SBBScheduledActivity {
+open class SBARemoveMedicationStepViewController: RSDStepViewController {
     
-    /// Get the schema info associated with this scheduled activity.
-    public var schemaInfo : RSDSchemaInfo? {
-        guard let activityIdentifier = self.activityIdentifier else {
-            return nil
-        }
-        return SBABridgeConfiguration.shared.schemaInfo(for: activityIdentifier)
-    }
+    @IBOutlet weak var titleLabel: UILabel?
     
-    /// Instantiate a new instance of a task path for this schedule.
-    public func instantiateTaskPath() -> RSDTaskPath {
-        if let task = self.activity.activityReference as? RSDTask {
-            return RSDTaskPath(task: task)
-        }
-        else if let taskInfoStep = self.taskInfoStep() {
-            return RSDTaskPath(taskInfo: taskInfoStep)
-        }
-        else {
-            assertionFailure("Missing activity reference: \(self)")
-            return RSDTaskPath.emptyPath()
-        }
-    }
-    
-    /// Get or instantiate a task info step for this schedule.
-    public func taskInfoStep() -> RSDTaskInfoStep? {
-        if let taskInfoStep = self.activity.activityReference as? RSDTaskInfoStep {
-            return taskInfoStep
-        }
-        else if let transformer = self.activity.activityReference as? RSDTaskTransformer {
-            return RSDTaskInfoStepObject(with: self.activity.activityReference!, taskTransformer: transformer)
-        }
-        else {
-            assertionFailure("Missing activity reference: \(self)")
-            return nil
+    override open func viewDidLoad() {
+        super.viewDidLoad()
+        
+        let underlinedPhrase = self.step.identifier
+        let titleStr = String(format: Localization.localizedString("MEDICATION_REMOVE_TITLE_%@"), step.identifier)
+        if let underlinedRange = titleStr.range(of: underlinedPhrase) {
+            let underlinedIndex = titleStr.distance(from: titleStr.startIndex, to: underlinedRange.lowerBound)
+            let attributedText = NSMutableAttributedString(string: titleStr)
+            attributedText.addAttribute(NSAttributedStringKey.underlineStyle, value: NSUnderlineStyle.styleSingle.rawValue, range: NSMakeRange(underlinedIndex, underlinedPhrase.count))
+            self.titleLabel?.attributedText = attributedText
         }
     }
 }
 
-extension RSDTaskPath {
-    
-    /// Create an empty task path.
-    static func emptyPath() -> RSDTaskPath {
-        return RSDTaskPath(task: RSDTaskObject(identifier: "NULL", stepNavigator: RSDConditionalStepNavigatorObject(with: [])))
+open class SBARemoveMedicationStepObject: RSDUIStepObject, RSDStepViewControllerVendor {
+    public func instantiateViewController(with taskPath: RSDTaskPath) -> (UIViewController & RSDStepController)? {
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let vc = storyboard.instantiateViewController(withIdentifier: "SBARemoveMedicationStepViewController") as? SBARemoveMedicationStepViewController
+        vc?.step = self
+        return vc
     }
 }

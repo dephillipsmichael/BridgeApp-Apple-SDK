@@ -47,6 +47,10 @@ open class SBATrackedItemDetailsStepObject : RSDFormUIStepObject, SBATrackedItem
     public private(set) var trackedItem: SBATrackedItem?
     
     public private(set) var previousAnswer: SBATrackedItemAnswer?
+    /// The previous answer needs to be updated if a user goes to the step for a second time after filling in details
+    public func updatePreviousAnswer(answer: SBATrackedItemAnswer?) {
+        self.previousAnswer = answer
+    }
 
     /// The template input field for selecting the time of day for a given schedule.
     lazy public private(set) var scheduleTimeTemplate: RSDCopyInputField = {
@@ -104,40 +108,6 @@ open class SBATrackedItemDetailsStepObject : RSDFormUIStepObject, SBATrackedItem
         copy.previousAnswer = previousAnswer
         copy.title = self.title ?? trackedItem.title
         return copy
-    }
-    
-    /// Create a mapping of key/value pairs for this `RSDStep.Type`.
-    open func answerMap(from taskResult: RSDTaskResult) -> (answers: [String : Any], schedules: [RSDWeeklyScheduleObject])? {
-        guard let collectionResult = taskResult.findResult(for: self) as? RSDCollectionResult else { return nil }
-        var answerMap : [String : Any] = [:]
-        var scheduleIndexes : [String] = []
-        var schedules : [RSDWeeklyScheduleObject] = []
-        for result in collectionResult.inputResults {
-            guard let answerResult = result as? RSDAnswerResult, let value = answerResult.value else { continue }
-            
-            if answerResult.identifier.hasPrefix(FieldIdentifiers.timeOfDay.stringValue) ||
-                answerResult.identifier.hasPrefix(FieldIdentifiers.daysOfWeek.stringValue),
-                let period = answerResult.identifier.range(of: ".") {
-                // If this is a schedule then map to the schedules
-                let index = String(answerResult.identifier.suffix(from: period.upperBound))
-                if !scheduleIndexes.contains(index) {
-                    var schedule = RSDWeeklyScheduleObject()
-                    let timeIdentifier = "\(FieldIdentifiers.timeOfDay.stringValue).\(index)"
-                    let time = collectionResult.findAnswerResult(with: timeIdentifier)?.value
-                    schedule.setTime(from: time)
-                    let daysIdentifier = "\(FieldIdentifiers.daysOfWeek.stringValue).\(index)"
-                    let days = collectionResult.findAnswerResult(with: daysIdentifier)?.value as? [Any]
-                    schedule.setWeekdays(from: days)
-                    schedules.append(schedule)
-                    scheduleIndexes.append(index)
-                }
-            } else {
-                // otherwise just map the field as-is.
-                answerMap[answerResult.identifier] = value
-            }
-        }
-
-        return (answerMap, schedules)
     }
     
     /// Subclasses must implement and *DO NOT* call super.

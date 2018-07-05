@@ -1,0 +1,29 @@
+{
+    "identifier":"medicationReminder",
+    "shouldHideActions":["skip"],
+    "progressMarkers":[],
+    "steps":[
+             {
+             "identifier": "medicationReminder",
+             "type": "form",
+             "title": "Let's set a Reminder for your Medications",
+             "detail":"When do you want us to remind you to take your Parkinson's medications? You can always change them later.",
+             "image":{
+                "type": "fetchable",
+                "imageName":"remindersIcon",
+                "placementType":"iconBefore"
+             },
+                "colorTheme": {
+                "usesLightStyle": false
+             },
+             "uiHint": "list",
+             "dataType": "multipleChoice.integer",
+             "choices": [
+                         {
+                         "text": "15 minutes before medication time",
+                         "value": 15
+                         }
+                         ]
+             }
+        ]
+}
