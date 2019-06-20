@@ -1,2 +1,2 @@
-github "dephillipsmichael/SageResearch" >= "pku"
+github "dephillipsmichael/SageResearch" "pku"
 github "Sage-Bionetworks/Bridge-iOS-SDK" "master"
